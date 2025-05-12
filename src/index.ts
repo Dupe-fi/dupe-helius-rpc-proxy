@@ -18,13 +18,19 @@ export default {
 			"Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, OPTIONS",
 			"Access-Control-Allow-Headers": "*",
 		}
+		const origin = request.headers.get('Origin');
+
 		if (supportedDomains) {
-			const origin = request.headers.get('Origin')
 			if (origin && supportedDomains.includes(origin)) {
-				corsHeaders['Access-Control-Allow-Origin'] = origin
+				corsHeaders['Access-Control-Allow-Origin'] = origin;
+			} else if (origin) {
+				return new Response('Access Blocked', {
+					status: 403,
+					headers: corsHeaders,
+				});
 			}
 		} else {
-			corsHeaders['Access-Control-Allow-Origin'] = '*'
+			corsHeaders['Access-Control-Allow-Origin'] = '*';
 		}
 
 		if (request.method === "OPTIONS") {
